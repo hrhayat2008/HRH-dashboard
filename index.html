@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎉VIP Dashboard</title>
+<style>
+:root{
+  --bg:#f6f6fb;
+  --card:#fff;
+  --text:#111827;
+  --primary:#4f46e5;
+  --secondary:#6366f1;
+  --accent:#f59e0b;
+  --radius:18px;
+  --shadow:0 12px 28px rgba(0,0,0,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);padding-bottom:90px;}
+.container{max-width:680px;margin:auto;padding:16px;}
+.hero{background:linear-gradient(135deg,#4f46e5,#6366f1);color:#fff;padding:22px;text-align:center;border-radius:18px 18px 0 0;box-shadow:var(--shadow);}
+.hero h1{font-size:26px;letter-spacing:1px;font-weight:800; animation:glow 1.5s infinite alternate;}
+@keyframes glow{0%{text-shadow:0 0 5px #fff;}50%{text-shadow:0 0 15px #fff;}100%{text-shadow:0 0 5px #fff;}}
+.card{background:var(--card);border-radius:var(--radius);padding:22px;margin-top:18px;box-shadow:var(--shadow);transition:all .3s ease;position:relative;overflow:hidden;}
+.card:hover{transform:translateY(-3px) scale(1.01);}
+button{padding:14px 20px;border-radius:14px;border:0;font-weight:700;cursor:pointer;transition:all .3s ease;font-size:15px;position:relative;overflow:hidden;}
+button:after{content:"";position:absolute;width:100%;height:100%;top:0;left:0;background:rgba(255,255,255,0.2);opacity:0;transition:opacity .3s;}
+button:active:after{opacity:1;transition:0s;}
+button.primary{background:linear-gradient(90deg,#4f46e5,#6366f1);color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.15);}
+button.primary:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 8px 22px rgba(0,0,0,.22);}
+button.accent{background:linear-gradient(90deg,#f59e0b,#fbbf24);color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.15);}
+button.accent:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 8px 22px rgba(0,0,0,.22);}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#111827;color:#fff;padding:12px 18px;border-radius:18px;opacity:0;transition:opacity .3s;z-index:9999;}
+.nav{position:fixed;bottom:0;left:0;width:100%;display:flex;gap:0;background:#fff;border-top:1px solid #ddd;box-shadow:0 -6px 16px rgba(0,0,0,.08);}
+.nav button{flex:1;padding:16px;font-weight:700;font-size:14px;border-radius:0;background:linear-gradient(135deg,#4f46e5,#6366f1);color:#fff;transition:all .3s;}
+.nav button:hover{background:linear-gradient(135deg,#6366f1,#4f46e5);transform:translateY(-2px);}
+.nav button.activeNav{background:linear-gradient(135deg,#f59e0b,#fbbf24);}
+ul{padding-left:20px;font-size:14px;}
+.progress{height:14px;background:#e5e7eb;border-radius:999px;overflow:hidden;margin-top:14px;}
+.bar{height:100%;width:0%;background:linear-gradient(90deg,#4f46e5,#f59e0b);transition:width .5s ease;}
+.points-glow{animation:glowPoints 0.8s ease-in-out;}
+@keyframes glowPoints{0%{text-shadow:0 0 5px #4f46e5;}50%{text-shadow:0 0 15px #4f46e5;}100%{text-shadow:0 0 5px #4f46e5;}}
+.shine{position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(120deg,rgba(255,255,255,0.1) 0%,rgba(255,255,255,0.3)50%,rgba(255,255,255,0.1)100%);transform:rotate(25deg);animation:shineAnim 2s infinite;}
+@keyframes shineAnim{0%{transform:rotate(25deg) translateX(-200%);}100%{transform:rotate(25deg) translateX(200%);}}
+
+/* Modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:999;}
+.modal .box{background:#000;border-radius:18px;width:90%;max-width:560px;aspect-ratio:16/9;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;}
+.modal .close{position:absolute;top:10px;right:10px;background:#fff;border-radius:50%;padding:6px 10px;border:0;font-weight:800;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<div class="hero"><h1>🎉 HRH VIP Dashboard</h1></div>
+<div class="container">
+
+<section id="dashboard" class="active card">
+  <h2>👤 Dashboard</h2>
+  <p>Points: <span id="points">0</span></p>
+  <p>Watched Ads: <span id="watched">0</span></p>
+  <div class="progress">
+    <div id="progressBar" class="bar"></div>
+  </div>
+
+  <div style="display:flex;gap:12px;margin-top:14px;flex-wrap:wrap;">
+    <button id="btnWatch" class="primary">▶ Watch Ad</button>
+    <button id="btnAuto" class="primary">⚡ Auto Ads</button>
+    <button id="btnStop" class="primary">⛔ Stop Ads</button>
+  </div>
+  <p style="margin-top:12px;">Next Ad in: <span id="adTimer">-</span> s</p>
+
+  <div class="card" style="margin-top:20px; background:linear-gradient(90deg,#f59e0b,#fbbf24);color:#fff;overflow:hidden;position:relative;">
+    <div class="shine"></div>
+    <h3>🎁 Daily Bonus</h3>
+    <button id="claimBtn" class="accent">Claim Bonus</button>
+  </div>
+
+  <div class="card" style="margin-top:20px; background:linear-gradient(135deg,#4f46e5,#6366f1);color:#fff;">
+    <h3>🔗 Refer & Earn</h3>
+    <input type="text" id="refLink" value="https://gigapub.com/?ref=guest" readonly style="background:#fff;color:#111;padding:8px 10px;border-radius:12px;margin-top:8px;width:100%;">
+    <button id="copyBtn" class="primary" style="margin-top:10px;">Copy Link</button>
+  </div>
+
+  <div class="card" style="margin-top:20px; background:#fff;">
+    <h3>🏆 Leaderboard</h3>
+    <ul id="leaders">
+      <li>Guest1 - <span class="leaderPts">50</span> pts</li>
+      <li>Guest2 - <span class="leaderPts">40</span> pts</li>
+      <li>Guest3 - <span class="leaderPts">30</span> pts</li>
+    </ul>
+  </div>
+</section>
+
+</div>
+
+<div id="toast" class="toast"></div>
+
+<!-- Ad Modal -->
+<div id="adModal" class="modal">
+  <div class="box">
+    <div id="adCountdown">15</div>
+    <button class="close" id="closeAd">✕</button>
+    <div id="gigapubAd"></div>
+  </div>
+</div>
+
+<script>
+// Variables
+let points=0, watched=0, autoTimer=null, adCountdown=null;
+const elPoints=document.getElementById('points');
+const elWatched=document.getElementById('watched');
+const progressBar=document.getElementById('progressBar');
+const adTimerEl=document.getElementById('adTimer');
+const adModal=document.getElementById('adModal');
+const adCountdownEl=document.getElementById('adCountdown');
+const closeAdBtn=document.getElementById('closeAd');
+
+// Refresh UI
+function refresh(){
+  elPoints.textContent=points;
+  elWatched.textContent=watched;
+  const pct=Math.min(100,(watched%10)*10);
+  progressBar.style.width=pct+'%';
+  elPoints.classList.add('points-glow');
+  setTimeout(()=>elPoints.classList.remove('points-glow'),800);
+}
+
+// Toast
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.style.opacity='1';
+  setTimeout(()=>{t.style.opacity='0';},1600);
+}
+
+// Show GigaPub Ad
+function showGigapubAd(callback){
+  adModal.style.display='flex';
+  adCountdownEl.textContent='15';
+  document.getElementById('gigapubAd').innerHTML = '<script src="https://ad.gigapub.tech/script?id=2479"><\/script>';
+  
+  let t=15;
+  adCountdown=setInterval(()=>{
+    t--;
+    adCountdownEl.textContent=t;
+    if(t<=0){
+      clearInterval(adCountdown);
+      adModal.style.display='none';
+      callback();
+    }
+  },1000);
+
+  closeAdBtn.onclick=()=>{
+    clearInterval(adCountdown);
+    adModal.style.display='none';
+    toast("Ad Closed");
+  }
+}
+
+// Manual Watch Ad
+document.getElementById('btnWatch').onclick=()=>showGigapubAd(()=>{
+  points++; watched++; refresh(); toast("Ad Watched! +1 point");
+});
+
+// Auto Ads
+document.getElementById('btnAuto').onclick=()=>{
+  if(!autoTimer){
+    autoTimer=setInterval(()=>showGigapubAd(()=>{
+      points++; watched++; refresh(); toast("Ad Watched! +1 point");
+    }),17000); // 15s ad + 2s buffer
+    toast("Auto Ads Started");
+  }
+};
+
+// Stop Ads
+document.getElementById('btnStop').onclick=()=>{
+  clearInterval(autoTimer); autoTimer=null;
+  clearInterval(adCountdown);
+  adModal.style.display='none';
+  toast("Ads Stopped");
+};
+
+// Daily Bonus
+let claimed=false;
+document.getElementById('claimBtn').onclick=()=>{
+  if(claimed){toast("আজকের বোনাস ইতিমধ্যেই ক্লেইম করা হয়েছে"); return;}
+  claimed=true; points+=5; refresh(); toast("বোনাস ক্লেইম হয়েছে 🎉");
+};
+
+// Copy Link
+document.getElementById('copyBtn').onclick=()=>{
+  const refLink=document.getElementById('refLink');
+  refLink.select();
+  navigator.clipboard.writeText(refLink.value);
+  toast("Link Copied!");
+};
+
+// Animate Leaderboard
+const leaderPts=document.querySelectorAll('.leaderPts');
+leaderPts.forEach(el=>{
+  let val=parseInt(el.textContent);
+  el.textContent=0;
+  let i=0;
+  const interval=setInterval(()=>{
+    if(i>=val) clearInterval(interval);
+    else{ i++; el.textContent=i;}
+  },30);
+});
+
+refresh();
+</script>
+
+</body>
+</html>
